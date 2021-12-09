@@ -7,8 +7,8 @@ class MVVM {
         this.$data = options.data;
         if (this.$el) {
             // console.log('this.$el' + this.$el)
-            new Compile(this.$el, this)
             new Observer(this.$data)
+            new Compile(this.$el, this)
             console.log('this.$data: ', this.$data)
         }
     }

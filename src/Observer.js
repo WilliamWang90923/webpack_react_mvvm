@@ -1,6 +1,8 @@
+const Dep = require('./util/dep')
+
 class Observer {
     constructor(data) {
-        
+        this.observe(data)
     }
     // data binding through defineProperty
     observe(data) {
@@ -16,16 +18,19 @@ class Observer {
     // set data property to be reactive
     defineReactive(obj, key, value) {
         let that = this
-        Object.defineProperties(obj, key, {
+        let dep = new Dep()
+        Object.defineProperty(obj, key, {
             enumerable: true,
             configurable: true,
             get() {
+                Dep.target && dep.addSub(Dep.target)
                 return value
             },
             set(newV) {
                 if (newV != value) {
                     that.observe(newV)
                     value = newV
+                    dep.notify()
                 }
             }
         })
