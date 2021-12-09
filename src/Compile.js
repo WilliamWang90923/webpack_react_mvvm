@@ -9,6 +9,8 @@ class Compile {
             // todo: move all these DOM to memory (fragment)
             let fragment = this.node2fragment(this.el)
             this.compile(fragment)
+            console.log(fragment)
+            this.el.appendChild(fragment)
         }
     }
 
@@ -20,19 +22,29 @@ class Compile {
     }
 
     compileElement(node) {
-
+        let attrs = node.attributes
+        Array.from(attrs).forEach( (attr) => {
+            // if attr is "v-"
+            let attrName = attr.name
+            if (this.isDirective(attrName)) {
+                let expression = attr.value
+                let [, type] = attrName.split('-')
+                CompileUtils[type](node, this.vm, expression)
+            }
+        })
     }
     compileText(node) {
         let expression = node.textContent
         let regex = /\{\{([^}]+)\}\}/g
         if (regex.test(expression)) {
             // substitute expression for data
-            CompileUtils
+            CompileUtils['text'](node, this.vm, expression)
         }
     }
     compile(fragment) {
         let childNodes = fragment.childNodes
         Array.from(childNodes).forEach( (node) => {
+            // deep search to compile all sub nodes
             if (this.isElementNode(node)) {
                 this.compileElement(node)
                 this.compile(node)

@@ -4,7 +4,11 @@ const MVVM = require('./src/MVVM.js')
 let vm = new MVVM({
     el:'#app',
     data:{
-        message:{a:'jw'},
+        message:{
+            a: {
+                aa: 'Durandal'
+            }
+        },
         b:'MVVM'
     }
 })
